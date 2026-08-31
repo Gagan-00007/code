@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Lightbulb, HelpCircle, Trophy, ArrowLeft } from "lucide-react";
+import { Search, Lightbulb, HelpCircle, Trophy, ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
-import wordRanksData from "@/lib/word-ranks.json";
+import { getRankedListForTarget, getRankOfGuess, EmbeddingMap } from "@/lib/rankWords";
 import HowToPlayModal from "./HowToPlayModal";
 import ShareResult from "./ShareResult";
 
-const wordRanks = wordRanksData as Record<string, number>;
+const SECRET_POOL = ["quest", "code", "hack", "algorithm", "developer", "system", "network", "cyber"];
 
 type Guess = {
   word: string;
@@ -16,6 +16,9 @@ type Guess = {
 };
 
 export default function GameClient() {
+  const [rankedList, setRankedList] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  
   const [guesses, setGuesses] = useState<Guess[]>([]);
   const [hintsUsed, setHintsUsed] = useState(0);
   const [input, setInput] = useState("");
@@ -25,18 +28,31 @@ export default function GameClient() {
   const [errorMsg, setErrorMsg] = useState("");
   const [infoMsg, setInfoMsg] = useState("");
 
-  const maxRank = useMemo(() => Object.keys(wordRanks).length, []);
+  const maxRank = rankedList.length;
 
-  const rankToWord = useMemo(() => {
-    const map = new Map<number, string>();
-    for (const [word, rank] of Object.entries(wordRanks)) {
-      map.set(rank, word);
+  useEffect(() => {
+    async function loadEmbeddings() {
+      try {
+        const response = await fetch('/word-embeddings.json');
+        if (!response.ok) throw new Error("Failed to load dictionary");
+        const embeddings: EmbeddingMap = await response.json();
+        
+        const targetWord = SECRET_POOL[Math.floor(Math.random() * SECRET_POOL.length)];
+        const list = getRankedListForTarget(embeddings, targetWord);
+        setRankedList(list);
+      } catch (err) {
+        console.error("Error loading embeddings:", err);
+      } finally {
+        setIsLoading(false);
+      }
     }
-    return map;
+    loadEmbeddings();
   }, []);
 
   const handleGuess = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return;
+    
     const word = input.trim().toLowerCase();
     if (!word) return;
 
@@ -46,8 +62,8 @@ export default function GameClient() {
     }
 
     // Determine rank
-    const rank = wordRanks[word];
-    if (rank === undefined) {
+    const rank = getRankOfGuess(rankedList, word);
+    if (rank === null) {
       setErrorMsg("I don't know this word.");
       setTimeout(() => setErrorMsg(""), 2000);
       return;
@@ -64,7 +80,7 @@ export default function GameClient() {
   };
 
   const handleHint = () => {
-    if (isWon) return;
+    if (isWon || isLoading) return;
     
     const guessedWords = new Set(guesses.map((g) => g.word));
     
@@ -81,9 +97,9 @@ export default function GameClient() {
     while (offset < maxRank) {
       // Check lower rank first (closer to answer)
       const lowerRank = targetRank - offset;
-      if (lowerRank >= 2 && rankToWord.has(lowerRank)) {
-        const word = rankToWord.get(lowerRank)!;
-        if (!guessedWords.has(word)) {
+      if (lowerRank >= 2 && lowerRank <= maxRank) {
+        const word = rankedList[lowerRank - 1]; // 1-based rank to 0-based index
+        if (word && !guessedWords.has(word)) {
           hintWord = word;
           hintRank = lowerRank;
           break;
@@ -92,9 +108,9 @@ export default function GameClient() {
       
       // Check higher rank
       const upperRank = targetRank + offset;
-      if (upperRank <= maxRank && rankToWord.has(upperRank)) {
-        const word = rankToWord.get(upperRank)!;
-        if (!guessedWords.has(word)) {
+      if (upperRank <= maxRank) {
+        const word = rankedList[upperRank - 1]; // 1-based rank to 0-based index
+        if (word && !guessedWords.has(word)) {
           hintWord = word;
           hintRank = upperRank;
           break;
@@ -126,10 +142,19 @@ export default function GameClient() {
   };
 
   const getRankBarWidth = (rank: number) => {
-    if (rank === 1) return "100%";
+    if (rank === 1 || maxRank === 0) return "100%";
     const percentage = Math.max(5, 100 - (rank / maxRank) * 100);
     return `${percentage}%`;
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center">
+        <Loader2 size={48} className="animate-spin text-accent-gold mb-4" />
+        <h2 className="font-display text-2xl uppercase tracking-widest text-off-white animate-pulse">Loading Dictionary...</h2>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-24 pb-16 px-6">
@@ -175,28 +200,28 @@ export default function GameClient() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            disabled={isWon}
+            disabled={isWon || isLoading}
             placeholder={isWon ? "You found it!" : "Type a word and press enter"}
             className={`w-full bg-white/5 border rounded-lg py-4 pl-12 pr-4 text-lg text-off-white focus:outline-none transition-colors disabled:opacity-50 ${errorMsg ? 'border-red-500' : 'border-white/10 focus:border-accent-gold'}`}
             autoFocus
           />
           <AnimatePresence>
             {errorMsg && (
-              <motion.div 
-                initial={{ opacity: 0, y: 5 }}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute left-0 -bottom-8 text-red-500 text-sm font-bold"
+                className="absolute -top-10 left-0 right-0 text-center text-red-500 font-bold bg-background py-1 z-10"
               >
                 {errorMsg}
               </motion.div>
             )}
             {infoMsg && (
-              <motion.div 
-                initial={{ opacity: 0, y: 5 }}
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="absolute left-0 -bottom-8 text-accent-blue text-sm font-bold"
+                className="absolute -top-10 left-0 right-0 text-center text-accent-blue font-bold bg-background py-1 z-10"
               >
                 {infoMsg}
               </motion.div>
