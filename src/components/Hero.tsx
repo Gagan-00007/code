@@ -91,8 +91,8 @@ export default function Hero() {
               ].map((unit, idx, arr) => (
                 <div key={unit.label} className="flex items-center gap-3 md:gap-6">
                   <div className="flex flex-col items-center gap-4">
-                    <div className="w-20 h-24 md:w-32 md:h-32 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-xl">
-                      <span className="font-display text-4xl md:text-7xl text-off-white font-bold tracking-widest">
+                    <div className="w-16 h-20 md:w-24 md:h-24 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center backdrop-blur-sm shadow-xl">
+                      <span className="font-display text-3xl md:text-5xl text-off-white font-bold tracking-widest">
                         {String(unit.value).padStart(2, "0")}
                       </span>
                     </div>
