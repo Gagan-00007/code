@@ -54,7 +54,7 @@ export default function Hero() {
             Welcome to the Ultimate Challenge &mdash; TECHNO QUEST 3.0
           </p>
 
-          <h1 className="font-display text-7xl md:text-9xl lg:text-[10rem] leading-none uppercase text-off-white mb-8 tracking-tight">
+          <h1 className="font-display text-6xl md:text-8xl lg:text-9xl leading-none uppercase text-off-white mb-8 tracking-tight">
             Code Hunt
           </h1>
 
