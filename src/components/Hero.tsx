@@ -116,6 +116,8 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">
             <a
               href={REGISTER_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group flex items-center justify-center gap-2 px-8 py-4 bg-accent-gold text-background font-bold text-lg rounded hover:bg-accent-gold/90 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
             >
               Register Now

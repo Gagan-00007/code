@@ -54,6 +54,8 @@ export default function Navbar() {
           ))}
           <a
             href={REGISTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="px-6 py-2.5 bg-accent-gold text-background font-bold tracking-wide rounded hover:bg-accent-gold/90 transition-transform hover:scale-105 active:scale-95"
           >
             REGISTER
@@ -91,6 +93,8 @@ export default function Navbar() {
               ))}
               <a
                 href={REGISTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
                 className="mt-4 px-6 py-3 bg-accent-gold text-background font-bold text-center rounded"
               >
