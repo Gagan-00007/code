@@ -122,12 +122,7 @@ export default function RegistrationForm() {
     setErrorMessage("");
 
     try {
-      // Replace this URL with the Google Apps Script Web App URL after deployment
       const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxn1gBSDXBzL1UozLqFjWNrL7syw5qoFXMSwqnVccZ7D6Y5MmJQ0qm3JWKMLUWhYO0qWg/exec";
-      
-      if (SCRIPT_URL === "YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL") {
-        throw new Error("Google Apps Script URL is not configured yet. Check implementation plan.");
-      }
 
       const payload = {
         ...formData,
