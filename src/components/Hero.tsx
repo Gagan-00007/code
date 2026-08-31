@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { Users, Calendar, Laptop, ChevronRight } from "lucide-react";
 import { REGISTER_URL } from "@/lib/Constants";
 
@@ -114,13 +115,13 @@ export default function Hero() {
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">
-            <a
+            <Link
               href={REGISTER_URL}
               className="group flex items-center justify-center gap-2 px-8 py-4 bg-accent-gold text-background font-bold text-lg rounded hover:bg-accent-gold/90 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
             >
               Register Now
               <ChevronRight className="group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
             <a
               href="#quest-trail"
               className="px-8 py-4 bg-transparent border-2 border-white/20 text-off-white font-bold text-lg rounded hover:border-accent-blue hover:text-accent-blue transition-all w-full sm:w-auto text-center"

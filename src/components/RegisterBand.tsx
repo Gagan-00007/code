@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { REGISTER_URL } from "@/lib/Constants";
 
@@ -17,13 +18,13 @@ export default function RegisterBand() {
           3 days before the event
         </p>
         
-        <a
+        <Link
           href={REGISTER_URL}
           className="group inline-flex items-center justify-center gap-2 px-12 py-5 bg-background text-off-white font-bold text-xl rounded hover:bg-[#1a1a1a] transition-all hover:scale-105 active:scale-95 shadow-xl"
         >
           Register Now
           <ChevronRight className="group-hover:translate-x-1 transition-transform" />
-        </a>
+        </Link>
         
         <p className="mt-8 text-background/70 font-bold uppercase tracking-widest text-sm">
           Payment via QR/UPI only
