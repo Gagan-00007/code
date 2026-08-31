@@ -169,7 +169,7 @@ export default function GameClient() {
         </div>
 
         {/* Input */}
-        <form onSubmit={handleGuess} className="relative mb-6">
+        <form onSubmit={handleGuess} className="relative mb-10">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-foreground/50" />
           <input
             type="text"
