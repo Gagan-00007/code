@@ -23,6 +23,7 @@ export default function GameClient() {
   const [showHowToPlay, setShowHowToPlay] = useState(false);
   const [showShare, setShowShare] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [infoMsg, setInfoMsg] = useState("");
 
   const maxRank = useMemo(() => Object.keys(wordRanks).length, []);
 
@@ -105,6 +106,12 @@ export default function GameClient() {
     if (hintWord) {
       setHintsUsed((prev) => prev + 1);
       setGuesses((prev) => [...prev, { word: hintWord, rank: hintRank }]);
+      
+      const currentBest = guesses.length > 0 ? Math.min(...guesses.map(g => g.rank)) : 300;
+      if (hintRank > currentBest) {
+        setInfoMsg("Revealing missed words...");
+        setTimeout(() => setInfoMsg(""), 3000);
+      }
     }
   };
 
@@ -182,6 +189,16 @@ export default function GameClient() {
                 className="absolute left-0 -bottom-8 text-red-500 text-sm font-bold"
               >
                 {errorMsg}
+              </motion.div>
+            )}
+            {infoMsg && (
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="absolute left-0 -bottom-8 text-accent-blue text-sm font-bold"
+              >
+                {infoMsg}
               </motion.div>
             )}
           </AnimatePresence>
