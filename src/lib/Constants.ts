@@ -1,1 +1,1 @@
-export const REGISTER_URL = "https://forms.google.com/REPLACE_ME";
+export const REGISTER_URL = "/register";
