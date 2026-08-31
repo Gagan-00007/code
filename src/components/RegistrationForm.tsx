@@ -71,6 +71,64 @@ const departments = [
 
 const years = ["1st Year", "2nd Year", "3rd Year", "4th Year"];
 
+interface InputFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  required?: boolean;
+}
+
+function InputField({ label, name, value, onChange, type = "text", required = false }: InputFieldProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-bold uppercase tracking-wider text-foreground/70">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        type={type}
+        name={name}
+        required={required}
+        value={value}
+        onChange={onChange}
+        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-off-white focus:outline-none focus:border-accent-gold transition-colors"
+      />
+    </div>
+  );
+}
+
+interface SelectFieldProps {
+  label: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: string[];
+  required?: boolean;
+}
+
+function SelectField({ label, name, value, onChange, options, required = false }: SelectFieldProps) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-bold uppercase tracking-wider text-foreground/70">
+        {label} {required && <span className="text-red-500">*</span>}
+      </label>
+      <select
+        name={name}
+        required={required}
+        value={value}
+        onChange={onChange}
+        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-off-white focus:outline-none focus:border-accent-gold transition-colors appearance-none"
+      >
+        <option value="" disabled className="text-gray-500 bg-background">Select {label.replace(" *", "")}</option>
+        {options.map((opt: string) => (
+          <option key={opt} value={opt} className="bg-background">{opt}</option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 export default function RegistrationForm() {
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [paymentImage, setPaymentImage] = useState<string | null>(null);
@@ -131,7 +189,7 @@ export default function RegistrationForm() {
         mimeType: paymentImage.substring(paymentImage.indexOf(":") + 1, paymentImage.indexOf(";")),
       };
 
-      const res = await fetch(SCRIPT_URL, {
+      await fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors", // Required for Google Apps Script unless properly configured with JSONP or specific headers
         headers: {
@@ -173,42 +231,6 @@ export default function RegistrationForm() {
     );
   }
 
-  const InputField = ({ label, name, type = "text", required = false }: any) => (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-bold uppercase tracking-wider text-foreground/70">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <input
-        type={type}
-        name={name}
-        required={required}
-        value={formData[name as keyof FormData] as string}
-        onChange={handleChange}
-        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-off-white focus:outline-none focus:border-accent-gold transition-colors"
-      />
-    </div>
-  );
-
-  const SelectField = ({ label, name, options, required = false }: any) => (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-bold uppercase tracking-wider text-foreground/70">
-        {label} {required && <span className="text-red-500">*</span>}
-      </label>
-      <select
-        name={name}
-        required={required}
-        value={formData[name as keyof FormData] as string}
-        onChange={handleChange}
-        className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-off-white focus:outline-none focus:border-accent-gold transition-colors appearance-none"
-      >
-        <option value="" disabled className="text-gray-500 bg-background">Select {label.replace(" *", "")}</option>
-        {options.map((opt: string) => (
-          <option key={opt} value={opt} className="bg-background">{opt}</option>
-        ))}
-      </select>
-    </div>
-  );
-
   return (
     <form onSubmit={handleSubmit} className="max-w-4xl mx-auto space-y-12 pb-20">
       
@@ -222,9 +244,9 @@ export default function RegistrationForm() {
       <section className="space-y-6">
         <h3 className="text-2xl font-display text-accent-blue border-b border-white/10 pb-2">General Info</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Registration Email" name="generalEmail" type="email" required />
-          <InputField label="Team Name" name="teamName" required />
-          <InputField label="College Name" name="collegeName" required />
+          <InputField label="Registration Email" name="generalEmail" type="email" value={formData.generalEmail} onChange={handleChange} required />
+          <InputField label="Team Name" name="teamName" value={formData.teamName} onChange={handleChange} required />
+          <InputField label="College Name" name="collegeName" value={formData.collegeName} onChange={handleChange} required />
         </div>
       </section>
 
@@ -232,11 +254,11 @@ export default function RegistrationForm() {
       <section className="space-y-6">
         <h3 className="text-2xl font-display text-accent-gold border-b border-white/10 pb-2">Team Leader Details</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Leader Name" name="leaderName" required />
-          <SelectField label="Leader Department" name="leaderDept" options={departments} required />
-          <SelectField label="Leader Year" name="leaderYear" options={years} required />
-          <InputField label="Leader Phone" name="leaderPhone" type="tel" required />
-          <InputField label="Leader Email" name="leaderEmail" type="email" required />
+          <InputField label="Leader Name" name="leaderName" value={formData.leaderName} onChange={handleChange} required />
+          <SelectField label="Leader Department" name="leaderDept" options={departments} value={formData.leaderDept} onChange={handleChange} required />
+          <SelectField label="Leader Year" name="leaderYear" options={years} value={formData.leaderYear} onChange={handleChange} required />
+          <InputField label="Leader Phone" name="leaderPhone" type="tel" value={formData.leaderPhone} onChange={handleChange} required />
+          <InputField label="Leader Email" name="leaderEmail" type="email" value={formData.leaderEmail} onChange={handleChange} required />
         </div>
       </section>
 
@@ -244,11 +266,11 @@ export default function RegistrationForm() {
       <section className="space-y-6">
         <h3 className="text-2xl font-display text-off-white border-b border-white/10 pb-2">Member 1 (Required)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Member 1 Name" name="m1Name" required />
-          <SelectField label="Member 1 Department" name="m1Dept" options={departments} required />
-          <SelectField label="Member 1 Year" name="m1Year" options={years} required />
-          <InputField label="Member 1 Phone" name="m1Phone" type="tel" required />
-          <InputField label="Member 1 Email" name="m1Email" type="email" required />
+          <InputField label="Member 1 Name" name="m1Name" value={formData.m1Name} onChange={handleChange} required />
+          <SelectField label="Member 1 Department" name="m1Dept" options={departments} value={formData.m1Dept} onChange={handleChange} required />
+          <SelectField label="Member 1 Year" name="m1Year" options={years} value={formData.m1Year} onChange={handleChange} required />
+          <InputField label="Member 1 Phone" name="m1Phone" type="tel" value={formData.m1Phone} onChange={handleChange} required />
+          <InputField label="Member 1 Email" name="m1Email" type="email" value={formData.m1Email} onChange={handleChange} required />
         </div>
       </section>
 
@@ -256,11 +278,11 @@ export default function RegistrationForm() {
       <section className="space-y-6 opacity-80 hover:opacity-100 transition-opacity">
         <h3 className="text-2xl font-display text-off-white border-b border-white/10 pb-2">Member 2 (Optional)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Member 2 Name" name="m2Name" />
-          <SelectField label="Member 2 Department" name="m2Dept" options={departments} />
-          <SelectField label="Member 2 Year" name="m2Year" options={years} />
-          <InputField label="Member 2 Phone" name="m2Phone" type="tel" />
-          <InputField label="Member 2 Email" name="m2Email" type="email" />
+          <InputField label="Member 2 Name" name="m2Name" value={formData.m2Name} onChange={handleChange} />
+          <SelectField label="Member 2 Department" name="m2Dept" options={departments} value={formData.m2Dept} onChange={handleChange} />
+          <SelectField label="Member 2 Year" name="m2Year" options={years} value={formData.m2Year} onChange={handleChange} />
+          <InputField label="Member 2 Phone" name="m2Phone" type="tel" value={formData.m2Phone} onChange={handleChange} />
+          <InputField label="Member 2 Email" name="m2Email" type="email" value={formData.m2Email} onChange={handleChange} />
         </div>
       </section>
 
@@ -268,11 +290,11 @@ export default function RegistrationForm() {
       <section className="space-y-6 opacity-80 hover:opacity-100 transition-opacity">
         <h3 className="text-2xl font-display text-off-white border-b border-white/10 pb-2">Member 3 (Optional)</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <InputField label="Member 3 Name" name="m3Name" />
-          <SelectField label="Member 3 Department" name="m3Dept" options={departments} />
-          <SelectField label="Member 3 Year" name="m3Year" options={years} />
-          <InputField label="Member 3 Phone" name="m3Phone" type="tel" />
-          <InputField label="Member 3 Email" name="m3Email" type="email" />
+          <InputField label="Member 3 Name" name="m3Name" value={formData.m3Name} onChange={handleChange} />
+          <SelectField label="Member 3 Department" name="m3Dept" options={departments} value={formData.m3Dept} onChange={handleChange} />
+          <SelectField label="Member 3 Year" name="m3Year" options={years} value={formData.m3Year} onChange={handleChange} />
+          <InputField label="Member 3 Phone" name="m3Phone" type="tel" value={formData.m3Phone} onChange={handleChange} />
+          <InputField label="Member 3 Email" name="m3Email" type="email" value={formData.m3Email} onChange={handleChange} />
         </div>
       </section>
 
