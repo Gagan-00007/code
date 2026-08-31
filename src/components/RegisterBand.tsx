@@ -19,8 +19,6 @@ export default function RegisterBand() {
         
         <a
           href={REGISTER_URL}
-          target="_blank"
-          rel="noopener noreferrer"
           className="group inline-flex items-center justify-center gap-2 px-12 py-5 bg-background text-off-white font-bold text-xl rounded hover:bg-[#1a1a1a] transition-all hover:scale-105 active:scale-95 shadow-xl"
         >
           Register Now
