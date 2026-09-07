@@ -16,11 +16,42 @@ export default function Leaderboard({ score }: LeaderboardProps) {
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (name && email) {
-      setSubmitted(true);
+      setIsSubmitting(true);
+      setErrorMessage("");
+      
+      try {
+        // You can replace this URL with your actual Google Apps Script URL for the game scores
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxn1gBSDXBzL1UozLqFjWNrL7syw5qoFXMSwqnVccZ7D6Y5MmJQ0qm3JWKMLUWhYO0qWg/exec"; 
+        
+        const payload = {
+          type: "game_score", // Added a type to distinguish from registration if using the same sheet
+          name: name,
+          email: email,
+          score: score
+        };
+
+        await fetch(SCRIPT_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        setSubmitted(true);
+      } catch (error: any) {
+        console.error("Submission error:", error);
+        setErrorMessage("Failed to submit score. Please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -33,6 +64,11 @@ export default function Leaderboard({ score }: LeaderboardProps) {
       
       {!submitted ? (
         <form onSubmit={handleSubmit} className="space-y-4 mb-10">
+          {errorMessage && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded text-sm text-center">
+              {errorMessage}
+            </div>
+          )}
           <div>
             <label className="block text-xs uppercase tracking-widest text-foreground/50 mb-1">Name / Team Name</label>
             <input 
@@ -53,8 +89,12 @@ export default function Leaderboard({ score }: LeaderboardProps) {
               className="w-full bg-white/5 border border-white/10 rounded px-4 py-2 focus:border-accent-gold focus:outline-none"
             />
           </div>
-          <button type="submit" className="w-full bg-accent-gold text-background font-bold py-3 rounded hover:bg-accent-gold/90 transition-colors">
-            Submit Score
+          <button 
+            type="submit" 
+            disabled={isSubmitting}
+            className="w-full bg-accent-gold text-background font-bold py-3 rounded hover:bg-accent-gold/90 transition-colors disabled:opacity-50 flex justify-center items-center gap-2"
+          >
+            {isSubmitting ? "Submitting..." : "Submit Score"}
           </button>
         </form>
       ) : (

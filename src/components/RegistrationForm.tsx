@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronRight, UploadCloud, Loader2 } from "lucide-react";
+import { ChevronRight, UploadCloud, Loader2, QrCode } from "lucide-react";
 
 type FormData = {
   generalEmail: string;
@@ -301,7 +301,21 @@ export default function RegistrationForm() {
       {/* Payment Upload */}
       <section className="space-y-6">
         <h3 className="text-2xl font-display text-accent-blue border-b border-white/10 pb-2">Payment Proof</h3>
-        <p className="text-sm text-foreground/70 mb-4">Please upload a screenshot of your payment after scanning the QR code.</p>
+        
+        <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
+          <p className="text-sm text-foreground/80 mb-4">
+            Please scan the QR code to complete your payment, then upload a screenshot of the successful transaction below.
+          </p>
+          <a
+            href="/qr-code.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent-blue/10 text-accent-blue border border-accent-blue/30 rounded-lg font-bold hover:bg-accent-blue/20 hover:border-accent-blue/50 transition-all"
+          >
+            <QrCode size={20} />
+            Show Payment QR Code
+          </a>
+        </div>
         
         <div className="border-2 border-dashed border-white/20 rounded-xl p-8 flex flex-col items-center justify-center text-center relative hover:bg-white/5 transition-colors cursor-pointer group">
           <input
