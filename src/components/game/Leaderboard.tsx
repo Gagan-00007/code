@@ -1,16 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type LeaderboardProps = {
   score: number;
 };
 
-// Mock data
-const mockLeaderboard = [
-  { name: "Alex Turing", score: 12 },
-  { name: "Team Syntax", score: 18 },
-  { name: "Sarah J.", score: 24 },
-  { name: "CodeNinja", score: 45 },
-];
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxn1gBSDXBzL1UozLqFjWNrL7syw5qoFXMSwqnVccZ7D6Y5MmJQ0qm3JWKMLUWhYO0qWg/exec";
+
 
 export default function Leaderboard({ score }: LeaderboardProps) {
   const [submitted, setSubmitted] = useState(false);
@@ -18,6 +13,26 @@ export default function Leaderboard({ score }: LeaderboardProps) {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [leaderboardData, setLeaderboardData] = useState<{name: string, score: number}[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getLeaderboard`);
+        const data = await response.json();
+        if (Array.isArray(data)) {
+          setLeaderboardData(data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch leaderboard", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchLeaderboard();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,8 +41,6 @@ export default function Leaderboard({ score }: LeaderboardProps) {
       setErrorMessage("");
       
       try {
-        // You can replace this URL with your actual Google Apps Script URL for the game scores
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxn1gBSDXBzL1UozLqFjWNrL7syw5qoFXMSwqnVccZ7D6Y5MmJQ0qm3JWKMLUWhYO0qWg/exec"; 
         
         const payload = {
           type: "game_score", // Added a type to distinguish from registration if using the same sheet
@@ -105,14 +118,20 @@ export default function Leaderboard({ score }: LeaderboardProps) {
 
       <h4 className="font-bold text-sm uppercase tracking-widest text-foreground/50 mb-4 text-center">Top Players</h4>
       <div className="space-y-2">
-        {mockLeaderboard.map((player, idx) => (
-          <div key={idx} className="flex justify-between items-center bg-white/5 p-3 rounded">
-            <span className="font-bold">
-              <span className="text-accent-gold mr-3">#{idx + 1}</span> {player.name}
-            </span>
-            <span className="text-off-white font-mono">{player.score}</span>
-          </div>
-        ))}
+        {isLoading ? (
+          <div className="text-center text-foreground/50 py-4 animate-pulse">Loading scores...</div>
+        ) : leaderboardData.length > 0 ? (
+          leaderboardData.map((player, idx) => (
+            <div key={idx} className="flex justify-between items-center bg-white/5 p-3 rounded">
+              <span className="font-bold">
+                <span className="text-accent-gold mr-3">#{idx + 1}</span> {player.name}
+              </span>
+              <span className="text-off-white font-mono">{player.score}</span>
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-foreground/50 py-4">No scores yet. Be the first!</div>
+        )}
       </div>
     </div>
   );
