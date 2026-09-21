@@ -14,7 +14,7 @@ export default function Organizers() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto border-t border-white/10 pt-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 max-w-6xl mx-auto border-t border-white/10 pt-12">
           <div>
             <h3 className="font-bold text-off-white mb-1">Dr. Santosh M Muranal</h3>
             <p className="text-sm text-foreground/60 uppercase tracking-wider">Principal, AIEMS</p>
@@ -29,6 +29,10 @@ export default function Organizers() {
           </div>
           <div>
             <h3 className="font-bold text-off-white mb-1">Prof. Sangeetha N</h3>
+            <p className="text-sm text-foreground/60 uppercase tracking-wider">Faculty Developer</p>
+          </div>
+          <div>
+            <h3 className="font-bold text-off-white mb-1">Prof. Vikas Kumar</h3>
             <p className="text-sm text-foreground/60 uppercase tracking-wider">Faculty Developer</p>
           </div>
         </div>
