@@ -23,9 +23,9 @@ export default function Footer() {
             <h4 className="font-bold text-off-white mb-4 uppercase tracking-widest text-sm">Contact Us</h4>
             <ul className="space-y-4">
               <li>
-                <a href="mailto:testsansmofficial@gmail.com" className="flex items-start gap-3 text-foreground/70 hover:text-accent-gold transition-colors">
+                <a href="mailto:aiemsaimlofficial@gmail.com" className="flex items-start gap-3 text-foreground/70 hover:text-accent-gold transition-colors">
                   <Mail size={18} className="shrink-0 mt-0.5" />
-                  <span>testsansmofficial@gmail.com</span>
+                  <span>aiemsaimlofficial@gmail.com</span>
                 </a>
               </li>
               <li>
@@ -52,7 +52,7 @@ export default function Footer() {
         </div>
 
         <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/10 text-sm text-foreground/50">
-          <p>&copy; {new Date().getFullYear()} SynaptIQ AI&ML Club. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} SynaptIQ.Tech. All rights reserved.</p>
           <a
             href="#"
             className="flex items-center gap-2 mt-4 md:mt-0 hover:text-off-white transition-colors uppercase tracking-widest font-bold"
