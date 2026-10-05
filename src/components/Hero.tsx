@@ -15,8 +15,8 @@ export default function Hero() {
   });
 
   useEffect(() => {
-    // Target: Oct 5, 2026 (Registration Deadline)
-    const targetDate = new Date("2026-10-05T00:00:00").getTime();
+    // Extended registration deadline: Oct 6, 2026 (till 12:00 AM / night)
+    const targetDate = new Date("2026-10-06T23:59:59").getTime();
 
     const interval = setInterval(() => {
       const now = new Date().getTime();
@@ -117,14 +117,14 @@ export default function Hero() {
           <div className="flex flex-col sm:flex-row justify-center items-center gap-6 mb-16">
             <Link
               href={REGISTER_URL}
-              className="group flex items-center justify-center gap-2 px-8 py-4 bg-accent-gold text-background font-bold text-lg rounded hover:bg-accent-gold/90 transition-all hover:scale-105 active:scale-95 w-full sm:w-auto"
+              className="group flex items-center justify-center gap-2 px-8 py-4 bg-accent-gold text-background font-bold text-lg rounded hover:bg-accent-gold/90 transition-all hover:scale-105 active:scale-95"
             >
               Register Now
               <ChevronRight className="group-hover:translate-x-1 transition-transform" />
             </Link>
             <a
               href="#quest-trail"
-              className="px-8 py-4 bg-transparent border-2 border-white/20 text-off-white font-bold text-lg rounded hover:border-accent-blue hover:text-accent-blue transition-all w-full sm:w-auto text-center"
+              className="px-8 py-4 bg-transparent border-2 border-white/20 text-off-white font-bold text-lg rounded hover:border-accent-blue hover:text-accent-blue transition-all w-full sm:w-auto"
             >
               See the Quest Trail
             </a>
