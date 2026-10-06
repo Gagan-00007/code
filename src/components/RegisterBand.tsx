@@ -11,18 +11,18 @@ export default function RegisterBand() {
       <div className="absolute inset-0 bg-black/10 mix-blend-overlay pointer-events-none" />
       
       <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-        <h2 className="font-display text-5xl md:text-7xl uppercase text-background mb-6">
-          Registration closes 5 Oct 2026
+        <h2 className="font-display text-5xl md:text-7xl uppercase text-red-600 mb-6">
+          Registration Closed
         </h2>
         <p className="text-xl font-medium text-background/80 mb-10 uppercase tracking-widest">
-          3 days before the event
+          The event registration window has ended
         </p>
         
         <Link
           href={REGISTER_URL}
-          className="group inline-flex items-center justify-center gap-2 px-12 py-5 bg-background text-off-white font-bold text-xl rounded hover:bg-[#1a1a1a] transition-all hover:scale-105 active:scale-95 shadow-xl"
+          className="group inline-flex items-center justify-center gap-2 px-12 py-5 bg-background text-off-white font-bold text-xl rounded hover:bg-[#1a1a1a] transition-all hover:scale-105 active:scale-95"
         >
-          Register Now
+          View Registration
           <ChevronRight className="group-hover:translate-x-1 transition-transform" />
         </Link>
         
